@@ -11,6 +11,11 @@ class HexDumper:
         self.__unpackable = self.__byte_num == 4 or self.__byte_num == 8  # 8bit, 16bitに対応するかもしれない
 
 
+    @property
+    def data(self):
+        return self.__data
+
+
     def __get_hd_by_addr(self, addr):
         current_index = (addr - self.__base_addr) // self.__byte_num
         return self.__data[current_index]
@@ -23,6 +28,21 @@ class HexDumper:
 
     def get_next_hd(self, hd):
         next_addr = hd.addr - self.__base_addr + self.__byte_num
+
+
+    def set_hd_desc_by_function(self, f):
+        for hd in self.__data:
+            hd.desc = f(hd.raw_data)
+
+
+    def set_hd_desc_by_list(self, l):
+        max_index = len(self.__data)
+
+        for idx, item in enumerate(l):
+            if idx < max_index:
+                self.__data[idx].desc = item
+            else:
+                break
 
 
     def __process_data(self):
@@ -44,6 +64,8 @@ class HexDumper:
         return ret_data
 
 
+# ========== dump functions ==========
+
     def __get_max_addr(self):
         if self.__data == []:
             return None
@@ -55,8 +77,6 @@ class HexDumper:
         return self.__base_addr + hd_index * self.__byte_num
 
 
-    # simple dump
-
     def dump(self, fmt=None):
         if not self.__unpackable:
             self.raw_dump()
@@ -66,11 +86,13 @@ class HexDumper:
             max_addr = self.__get_max_addr()
             max_byte_length = max_addr.bit_length() // 4 + 1
 
-            fmt = f"{{:{max_byte_length}x}}: {{}} -> {{:x}}"
+            not_desc_fmt = f"{{:{max_byte_length}x}}: {{}} -> {{:x}}"
+            desc_fmt = f"{{:{max_byte_length}x}}: {{}} -> {{:{self.__byte_num * 2}x}} | {{}}"
 
         for i, hd in enumerate(self.__data):
+            fmt = not_desc_fmt if hd.desc is None else desc_fmt
             addr = self.__get_addr(i)
-            print(fmt.format(addr, hd.dump_string, hd.value))
+            print(fmt.format(addr, hd.dump_string, hd.value, hd.desc))
 
 
     def raw_dump(self, fmt=None):
