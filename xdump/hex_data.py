@@ -9,6 +9,7 @@ class HexData:
         self.__unpackable = self.__byte_num == 4 or self.__byte_num == 8  # 8bit, 16bitに対応するかもしれない
         self.__dump_string = self.__make_dump_string()
         self.__value = self.__unpack(endian) if self.__unpackable else None
+        self.description = None  # extended property
 
 
     @property
