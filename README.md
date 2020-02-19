@@ -1,6 +1,14 @@
 # xdump
 
+## description
+
 俺式hexdump
+
+## Install
+
+```bash
+python setup.py install
+```
 
 ## 機能
 
@@ -13,6 +21,5 @@
 
 ## Todo
 
-- setup.pyを書く
 - コマンドラインツールとして使えるスクリプトを同梱する
 - 使い方を書く
