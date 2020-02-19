@@ -1,4 +1,4 @@
-from hex_data import HexData
+from xdump.hex_data import HexData
 
 
 class HexDumper:

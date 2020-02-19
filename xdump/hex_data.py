@@ -1,4 +1,4 @@
-from util import upk
+from xdump.util import upk
 
 
 class HexData:
