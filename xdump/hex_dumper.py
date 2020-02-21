@@ -23,11 +23,12 @@ class HexDumper:
 
     def get_prev_hd(self, hd):
         prev_addr = hd.addr - self.__base_addr - self.__byte_num
-        return __get_hd_by_addr(prev_addr)
+        return self.__get_hd_by_addr(prev_addr)
 
 
     def get_next_hd(self, hd):
         next_addr = hd.addr - self.__base_addr + self.__byte_num
+        return self.__get_hd_by_addr(next_addr)
 
 
     def set_hd_desc_by_function(self, f):
@@ -52,12 +53,14 @@ class HexDumper:
             if offset + self.__byte_num < len(self.__raw_data):
                 word = self.__raw_data[offset:offset+self.__byte_num]
             else:
-                # todo: endian
                 word = self.__raw_data[offset:]
-                while len(word) < self.__byte_num:
-                    word += b"\x00"
+                padding = (self.__byte_num - len(word))
+                if self.__endian == "little":
+                    word += b"\x00" * padding
+                else:
+                    word = b"\x00" * padding + word
 
-            hd = HexData(word, self.__base_addr + offset)
+            hd = HexData(word, self.__base_addr + offset, endian=self.__endian)
             ret_data.append(hd)
             offset += self.__byte_num
 
